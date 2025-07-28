@@ -17,10 +17,10 @@ export default function RootLayout() {
 
  // Variable fonts
  roboto: require("../assets/fonts/Roboto-VariableFont_wdth,wght.ttf"),
- spaceMono: require("../assets/fonts/SpaceMono-Regular.ttf"),
+ OpenSansCondensed: require("../assets/fonts/OpenSans_Condensed-ExtraBoldItalic.ttf"),
  openSans: require("../assets/fonts/OpenSans-VariableFont_wdth,wght.ttf"),
  robotoCondensed: require("../assets/fonts/Roboto-VariableFont_wdth,wght.ttf"),
- openSansWide: require("../assets/fonts/OpenSans-VariableFont_wdth,wght.ttf"),
+ openSansWide: require("../assets/fonts/OpenSans-Italic-VariableFont_wdth,wght.ttf"),
   });
 
   useEffect(() => {

@@ -6,7 +6,7 @@ const PATOKAN = 2; //bisa diubah
 
 const MAHASISWA = [
   { nama: "Hiswan", font: "ubuntu" },
-  { nama: "Asyap", font: "spaceMono" },
+  { nama: "Asyap", font: "OpenSansCondensed" },
   { nama: "Atta Halilintar", font: "roboto" },
   { nama: "Irsyad", font: "openSans" },
   { nama: "Alryadi", font: "inter" },
