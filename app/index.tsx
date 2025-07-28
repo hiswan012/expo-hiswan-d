@@ -1,184 +1,126 @@
-import React, { useState } from 'react';
-import { Text, View, StyleSheet, Image, TouchableOpacity, ScrollView } from "react-native";
-import { MaterialIcons } from '@expo/vector-icons';
+import React from "react";
+import { ScrollView, Text, View, Dimensions, StyleSheet } from "react-native";
 
-const initialGridImages = [
-  { id: 1, mainSrc: 'https://picsum.photos/id/101/200', altSrc: 'https://picsum.photos/id/102/200', isFlipped: false, scale: 1 },
-  { id: 2, mainSrc: 'https://picsum.photos/id/103/200', altSrc: 'https://picsum.photos/id/104/200', isFlipped: false, scale: 1 },
-  { id: 3, mainSrc: 'https://picsum.photos/id/105/200', altSrc: 'https://picsum.photos/id/106/200', isFlipped: false, scale: 1 },
-  { id: 4, mainSrc: 'https://picsum.photos/id/107/200', altSrc: 'https://picsum.photos/id/108/200', isFlipped: false, scale: 1 },
-  { id: 5, mainSrc: 'https://picsum.photos/id/109/200', altSrc: 'https://picsum.photos/id/110/200', isFlipped: false, scale: 1 },
-  { id: 6, mainSrc: 'https://picsum.photos/id/111/200', altSrc: 'https://picsum.photos/id/112/200', isFlipped: false, scale: 1 },
-  { id: 7, mainSrc: 'https://picsum.photos/id/113/200', altSrc: 'https://picsum.photos/id/114/200', isFlipped: false, scale: 1 },
-  { id: 8, mainSrc: 'https://picsum.photos/id/115/200', altSrc: 'https://picsum.photos/id/116/200', isFlipped: false, scale: 1 },
-  { id: 9, mainSrc: 'https://picsum.photos/id/117/200', altSrc: 'https://picsum.photos/id/118/200', isFlipped: false, scale: 1 },
+const TOTAL_STAMBUK = 105841112722;
+const PATOKAN = 2; //bisa diubah
+
+const MAHASISWA = [
+  { nama: "Hiswan", font: "ubuntu" },
+  { nama: "Asyap", font: "spaceMono" },
+  { nama: "Atta Halilintar", font: "roboto" },
+  { nama: "Irsyad", font: "openSans" },
+  { nama: "Alryadi", font: "inter" },
+  { nama: "Sanjaya", font: "bitcount" },
+  { nama: "Ari", font: "RobotoItalic" },
+  { nama: "Abdul", font: "spaceMonoBold" },
+  { nama: "Ma'ruf Amin", font: "robotoCondensed" },
+  { nama: "Yudis", font: "openSansWide" },
 ];
 
+// Fungsi untuk dapatkan urutan mundur & maju secara melingkar
+const generateUrutan = (patokan: number) => {
+  const sebelum: number[] = [];
+  const sesudah: number[] = [];
+
+  // Mundur 5 langkah
+  for (let i = 1; i <= 5; i++) {
+    let idx = patokan - i;
+    if (idx <= 0) idx = TOTAL_STAMBUK + idx;
+    sebelum.push(idx);
+  }
+
+  // Maju 5 langkah
+  for (let i = 1; i <= 5; i++) {
+    let idx = patokan + i;
+    if (idx > TOTAL_STAMBUK) idx = idx - TOTAL_STAMBUK;
+    sesudah.push(idx);
+  }
+
+  return { sebelum, sesudah };
+};
 
 export default function Index() {
-  const [gridImages, setGridImages] = useState(initialGridImages);
-
-  // Fungsi untuk menangani klik gambar
-  const handleImagePress = (imageId: number) => {
-    setGridImages(currentImages =>
-      currentImages.map(image => {
-        if (image.id === imageId) {
-          // Hitung skala baru dengan batasan maksimal 2x
-          const newScale = Math.min(image.scale * 1.2, 2);
-          return {
-            ...image,
-            isFlipped: !image.isFlipped, // Toggle gambar utama/alternatif
-            scale: newScale, // Terapkan scaling
-          };
-        }
-        return image;
-      })
-    );
-  };
+  const { sebelum, sesudah } = generateUrutan(PATOKAN);
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      {/* Bagian komponen lama tetap sama */}
-      <View style={styles.rectangle}>
-        <Image
-          source={{ uri: "https://img.icons8.com/m_rounded/512/chatgpt.png" }}
-          style={styles.image}
-          resizeMode="cover"
-        />
-      </View>
-      <View style={styles.triangle} />
-      <View style={styles.pill}>
-        <MaterialIcons name="person" size={24} color="white" />
-        <Text style={styles.pillText}>105841111822</Text>
-      </View>
-      <View style={styles.textContainer}>
-        <Text style={styles.redText}>ARI AHMAD DAHRIL</Text>
-        <Text style={styles.whiteText}>105841111822</Text>
-      </View>
-      <View style={styles.blueCircle}></View>
+      <Text style={styles.title}>Nama Mahasiswa</Text>
 
-      {/* Grid gambar 3x3 */}
-      <View style={styles.gridContainer}>
-        {gridImages.map(image => (
-          <TouchableOpacity
-            key={image.id}
-            onPress={() => handleImagePress(image.id)}
-            style={styles.gridCell}
+      <Text style={styles.subTitle}>Sebelum Stambuk : {TOTAL_STAMBUK}</Text>
+      {sebelum.map((no, idx) => (
+        <View style={styles.card} key={`sbl-${no}`}>
+          <Text style={[styles.namaText, { fontFamily: MAHASISWA[idx].font }]}>
+            {MAHASISWA[idx].nama}
+          </Text>
+        </View>
+      ))}
+
+      <Text style={styles.subTitle}>Sesudah Stambuk : {TOTAL_STAMBUK}</Text>
+      {sesudah.map((no, idx) => (
+        <View style={styles.card} key={`ssd-${no}`}>
+          <Text
+            style={[
+              styles.namaText,
+              { fontFamily: MAHASISWA[idx + 5].font },
+            ]}
           >
-            <Image
-              source={{ uri: image.isFlipped ? image.altSrc : image.mainSrc }}
-              style={[
-                styles.gridImage,
-                { 
-                  transform: [{ scale: image.scale }],
-                  borderRadius: 8, // Untuk konsistensi dengan sel
-                }
-              ]}
-              resizeMode="cover"
-            />
-          </TouchableOpacity>
-        ))}
-      </View>
+            {MAHASISWA[idx + 5].nama}
+          </Text>
+        </View>
+      ))}
     </ScrollView>
   );
 }
 
+// Style
+const { width, height } = Dimensions.get("window");
+
 const styles = StyleSheet.create({
   container: {
     flexGrow: 1,
-    justifyContent: "flex-start",
+    backgroundColor: "#f0f4f8",
+    paddingHorizontal: width * 0.05,
+    paddingVertical: height * 0.04,
     alignItems: "center",
-    backgroundColor: "#fff",
-    paddingVertical: 60,
   },
-  rectangle: {
-    width: 220,
-    height: 110,
-    backgroundColor: "#eee",
-    borderRadius: 12,
-    overflow: "hidden",
-    marginBottom: 20,
-    justifyContent: "center",
-    alignItems: "center"
+  title: {
+    fontSize: width * 0.05,
+    fontWeight: "500",
+    color: "#1e293b",
+    marginBottom: 50,
+    textAlign: "center",
+    letterSpacing: 1,
   },
-  image: {
-    width: "100%",
-    height: "100%",
-  },
-  triangle: {
-    width: 0,
-    height: 0,
-    borderLeftWidth: 40,
-    borderRightWidth: 40,
-    borderBottomWidth: 70,
-    borderLeftColor: "transparent",
-    borderRightColor: "transparent",
-    borderBottomColor: "orange",
-    marginBottom: 20,
-  },
-  pill: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: "#4a90e2",
-    borderRadius: 50,
-    paddingHorizontal: 24,
-    paddingVertical: 12,
-    marginBottom: 20,
-    elevation: 4,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 4,
-  },
-  pillText: {
-    color: "white",
-    fontWeight: "bold",
-    fontSize: 18,
-    marginLeft: 10,
-  },
-  textContainer: {
-    backgroundColor: "black",
-    borderRadius: 10,
+  subTitle: {
+    fontSize: width * 0.04,
+    fontWeight: "400",
     marginTop: 20,
-    padding: 10,
-    alignItems: 'center',
+    marginBottom: 12,
+    alignSelf: "flex-start",
+    color: "#475569",
   },
-  redText: {
-    color: "red",
-    fontSize: 25,
-    fontWeight: "bold",
+  card: {
+    width: width * 0.95,
+    borderRadius: 20,
+    paddingVertical: 18,
+    paddingHorizontal: 20,
+    marginBottom: 18,
+
+    backgroundColor: "#587686ff",
+    borderWidth: 1,
+    borderColor: "#e2e8f0",
+
+    shadowColor: "#000",
+    shadowOpacity: 0.08,
+    shadowOffset: { width: 0, height: 3 },
+    shadowRadius: 6,
+    elevation: 3,
+  },
+  namaText: {
+    fontSize: width * 0.03,
+    fontWeight: "600",
+    color: "#1f2937",
     textAlign: "center",
   },
-  whiteText: {
-    color: "white",
-    fontWeight: "bold",
-  },
-  blueCircle: {
-    width: 50,
-    height: 50,
-    backgroundColor: "blue",
-    borderRadius: 100,
-    marginTop: 10
-  },
-  gridContainer: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'center',
-    width: '100%',
-    maxWidth: 330, // Maksimal 3 kolom (100*3 + margin)
-    marginTop: 20,
-  },
-  gridCell: {
-    width: 100,
-    height: 100,
-    margin: 5,
-    backgroundColor: '#e0e0e0',
-    borderRadius: 8,
-    overflow: 'hidden',
-  },
-  gridImage: {
-    width: '100%',
-    height: '100%',
-  }
 });
+
